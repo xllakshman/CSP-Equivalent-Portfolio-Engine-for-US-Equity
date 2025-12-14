@@ -1,0 +1,31 @@
+ticker,shares,avg_cost,sector,conviction
+AAPL,0.08475116,219.82,Tech,high
+AMD,4.88599631,134.59,Tech,medium
+AMZN,65.62631356,207.2,Tech,high
+ASML,0.07898607,1023.31,Tech,high
+AVGO,0.40469449,312.81,Tech,medium
+BABA,0.95402101,158.04,Tech,high
+CRSP,0.41212871,50.52,Healthcare,low
+CRWD,1.50168238,437.44,Cyber Security,high
+FTNT,0.81667953,83.87,Cyber Security,high
+GOOGL,0.56388642,266.41,Tech,high
+IONQ,0.4631034,52.97,Quantum Computing,high
+LLY,0.08719176,834.68,Healthcare,high
+META,2.49251664,679.68,Tech,high
+MSFT,0.58601666,498.88,Tech,high
+MU,1.24328231,192.28,Tech,high
+NFLX,5.25887466,96.62,Tech,high
+NOW,0.11633286,859.02,Tech,high
+NVDA,1.30571407,184.99,Tech,high
+NVO,1.06234042,47,Healthcare,high
+PANW,0.61892568,199.97,Cyber Security,high
+QCOM,4.70200724,165.61,Tech,high
+S,142.9001029,21.08,Cyber Security,medium
+SMCI,1.55303265,34.55,Tech,medium
+TSLA,1.08300498,387.35,Tech,medium
+TSM,0.61003982,277.21,Tech,high
+UNH,0.65166364,326.12,Healthcare,high
+VRTX,0.29187455,438.33,Healthcare,high
+MELI,0.5,1990,Tech,high
+ADOBE,1.5,346,Tech,high
+UBER,3.5,84,Tech,high
