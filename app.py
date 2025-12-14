@@ -11,7 +11,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("📊 Portfolio Command Center")
+st.title("📊 CSP Equivalant Engine For USA Equity Portfolio Risk Management & Growth")
 st.caption(
     "Rules-based investing | India-legal CSP equivalent | "
     "200 DMA anchored | Risk-aware capital recycling"
