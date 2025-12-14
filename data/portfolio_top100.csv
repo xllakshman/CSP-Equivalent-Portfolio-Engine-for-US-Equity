@@ -1,0 +1,84 @@
+Ticker,Sector,Company Name,MarketCap_USD_Bn,PE_Ratio,Growth_%_3Y,AI_Exposure_Score
+AAPL,Technology,Apple Inc,3000,32,8,6
+MSFT,Technology,Microsoft Corp,3100,35,14,9
+NVDA,Technology,NVIDIA Corp,2200,45,55,10
+GOOGL,Technology,Alphabet Inc,1900,28,11,9
+META,Technology,Meta Platforms Inc,1200,30,18,8
+AMZN,Technology,Amazon.com Inc,1700,45,12,8
+ADBE,Technology,Adobe Inc,300,40,13,8
+CRM,Technology,Salesforce Inc,260,32,14,7
+ORCL,Technology,Oracle Corp,330,28,9,7
+INTC,Technology,Intel Corp,200,NA,3,6
+AMD,Technology,Advanced Micro Devices Inc,250,40,25,9
+CSCO,Technology,Cisco Systems Inc,220,18,4,5
+AVGO,Technology,Broadcom Inc,900,35,15,8
+TXN,Technology,Texas Instruments Inc,170,28,6,4
+QCOM,Technology,Qualcomm Inc,190,22,7,6
+NOW,Technology,ServiceNow Inc,300,55,25,8
+SNOW,Technology,Snowflake Inc,70,NA,40,8
+PLTR,Technology,Palantir Technologies Inc,45,NA,20,9
+IBM,Technology,IBM Corp,160,20,5,7
+INTU,Technology,Intuit Inc,200,45,14,6
+ADSK,Technology,Autodesk Inc,240,50,12,6
+PANW,Technology,Palo Alto Networks Inc,340,55,25,7
+CRWD,Technology,CrowdStrike Holdings Inc,260,65,30,7
+FTNT,Technology,Fortinet Inc,230,40,20,6
+NET,Technology,Cloudflare Inc,35,NA,35,7
+ZS,Technology,Zscaler Inc,30,NA,30,7
+DDOG,Technology,Datadog Inc,45,55,35,7
+ANET,Technology,Arista Networks Inc,360,45,20,6
+SMCI,Technology,Super Micro Computer Inc,550,30,50,9
+DELL,Technology,Dell Technologies Inc,90,18,6,4
+HPQ,Technology,HP Inc,30,10,2,3
+TER,Technology,Teradyne Inc,20,25,8,4
+MSI,Technology,Motorola Solutions Inc,70,30,8,4
+SHOP,Technology,Shopify Inc,90,NA,25,6
+UBER,Technology,Uber Technologies Inc,160,35,20,5
+LYFT,Technology,Lyft Inc,6,NA,10,3
+PATH,Technology,UiPath Inc,10,NA,18,6
+OKTA,Technology,Okta Inc,15,NA,10,4
+DOCU,Technology,DocuSign Inc,12,NA,5,4
+TWLO,Technology,Twilio Inc,20,NA,8,4
+ROKU,Technology,Roku Inc,12,NA,7,3
+ETSY,Technology,Etsy Inc,8,20,6,3
+SPLK,Technology,Splunk Inc,NA,NA,NA,6
+BABA,Technology,Alibaba ADR,190,15,5,6
+BIDU,Technology,Baidu ADR,30,14,4,7
+NTES,Technology,NetEase ADR,65,18,6,5
+SAP,Technology,SAP SE ADR,220,25,7,5
+JBL,Technology,Jabil Inc,18,14,5,3
+PHLX,Technology,Philips ADR,30,22,3,4
+UNH,Healthcare,UnitedHealth Group Inc,480,22,10,3
+LLY,Healthcare,Eli Lilly and Co,750,70,25,4
+JNJ,Healthcare,Johnson & Johnson,380,20,4,3
+PFE,Healthcare,Pfizer Inc,150,14,-5,2
+MRK,Healthcare,Merck & Co,280,25,8,3
+ABBV,Healthcare,AbbVie Inc,320,22,6,2
+TMO,Healthcare,Thermo Fisher Scientific Inc,230,30,8,4
+ABT,Healthcare,Abbott Laboratories,200,28,7,3
+MDT,Healthcare,Medtronic PLC,90,24,3,2
+BSX,Healthcare,Boston Scientific Corp,100,35,10,3
+BDX,Healthcare,Becton Dickinson and Co,85,28,5,2
+GEHC,Healthcare,GE HealthCare Technologies Inc,75,25,6,4
+IQV,Healthcare,IQVIA Holdings Inc,50,30,7,5
+VEEV,Healthcare,Veeva Systems Inc,30,45,15,6
+TDOC,Healthcare,Teladoc Health Inc,4,NA,-2,5
+RXRX,Healthcare,Recursion Pharmaceuticals Inc,4,NA,20,8
+HIMS,Healthcare,Hims & Hers Health Inc,5,35,30,4
+ILMN,Healthcare,Illumina Inc,18,NA,-3,4
+GILD,Healthcare,Gilead Sciences Inc,90,16,3,2
+VRTX,Healthcare,Vertex Pharmaceuticals Inc,120,30,12,3
+BIIB,Healthcare,Biogen Inc,35,14,2,2
+ZBH,Healthcare,Zimmer Biomet Holdings Inc,25,18,4,2
+HOLX,Healthcare,Hologic Inc,20,20,5,3
+EW,Healthcare,Edwards Lifesciences Corp,45,35,8,3
+ALGN,Healthcare,Align Technology Inc,50,45,7,3
+LH,Healthcare,Laboratory Corp of America,25,14,3,2
+DGX,Healthcare,Quest Diagnostics Inc,20,15,3,2
+CI,Healthcare,Cigna Group,100,12,5,2
+HCA,Healthcare,HCA Healthcare Inc,80,14,6,2
+CNC,Healthcare,Centene Corp,40,11,5,2
+IDXX,Healthcare,IDEXX Laboratories Inc,70,55,12,3
+CRL,Healthcare,Charles River Laboratories,15,20,4,2
+PKI,Healthcare,PerkinElmer Inc,18,30,6,4
+MASI,Healthcare,Masimo Corp,7,NA,2,3
