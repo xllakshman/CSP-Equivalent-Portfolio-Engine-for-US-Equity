@@ -12,191 +12,238 @@ st.set_page_config(
 )
 
 st.title("📊 Portfolio Command Center")
-st.caption("India-legal CSP-equivalent | 200 DMA anchored | Risk-aware capital recycling")
+st.caption(
+    "Rules-based investing | India-legal CSP equivalent | "
+    "200 DMA anchored | Risk-aware capital recycling"
+)
 
 # =====================================================
-# STRATEGY CONFIG (SINGLE SOURCE OF TRUTH)
+# STRATEGY CONFIG (CENTRAL CONTROL)
 # =====================================================
-SELL_L1 = 0.15   # +15% above 200 DMA
-SELL_L2 = 0.20   # +20%
-SELL_L3 = 0.30   # +30%
+SELL_L1 = 0.15
+SELL_L2 = 0.20
+SELL_L3 = 0.30
 
-SELL_L1_PCT = 0.25   # sell 25%
-SELL_L2_PCT = 0.25   # sell another 25%
+SELL_L1_PCT = 0.25
+SELL_L2_PCT = 0.25
 
-BUY_ZONE_LOW = 0.92   # 8% below 200 DMA
-BUY_ZONE_HIGH = 0.97  # 3% below 200 DMA
-DEEP_BUY = 0.90       # aggressive buy
-NEAR_DMA = 0.03       # ±3%
+BUY_ZONE_LOW = 0.92
+BUY_ZONE_HIGH = 0.97
+DEEP_BUY = 0.90
+NEAR_DMA = 0.03
 
-NASDAQ_EXTREME = 0.12  # market-wide extension flag
+NASDAQ_EXTREME = 0.12
 
 # =====================================================
-# LOAD PORTFOLIO CSV
+# DATA LOADERS
 # =====================================================
 @st.cache_data
 def load_portfolio():
-    try:
-        df = pd.read_csv("data/portfolio.csv")
-        df.columns = df.columns.str.strip().str.lower()
-        return df
-    except Exception as e:
-        st.error(f"❌ Failed to load data/portfolio.csv: {e}")
-        st.stop()
+    df = pd.read_csv("data/portfolio.csv")
+    df.columns = df.columns.str.strip().str.lower()
+    df["ticker"] = df["ticker"].str.upper()
+    return df
 
-portfolio = load_portfolio()
-
-required_cols = {"ticker", "shares", "avg_cost", "sector"}
-if not required_cols.issubset(portfolio.columns):
-    st.error("CSV must contain columns: ticker, shares, avg_cost, sector")
-    st.stop()
-
-portfolio["ticker"] = portfolio["ticker"].str.upper()
-
-# =====================================================
-# DATA FETCH HELPERS (SCALAR-SAFE)
-# =====================================================
-@st.cache_data(ttl=3600)
-def fetch_price_data(ticker: str) -> pd.DataFrame:
-    return yf.download(
-        ticker,
-        period="1y",
-        interval="1d",
-        progress=False
-    )
+@st.cache_data
+def load_top100():
+    df = pd.read_csv("data/portfolio_top100.csv")
+    df.columns = df.columns.str.strip().str.lower()
+    df["ticker"] = df["ticker"].str.upper()
+    return df
 
 @st.cache_data(ttl=3600)
-def fetch_nasdaq_dist() -> float:
+def fetch_price_data(ticker):
+    return yf.download(ticker, period="1y", interval="1d", progress=False)
+
+@st.cache_data(ttl=3600)
+def fetch_nasdaq_dist():
     data = yf.download("^IXIC", period="1y", interval="1d", progress=False)
-
     if data is None or data.empty or len(data) < 200:
         return 0.0
-
     close = data["Close"]
     price = float(close.iloc[-1])
-    dma_200 = float(close.rolling(200).mean().iloc[-1])
-
-    return float((price - dma_200) / dma_200)
-
-nasdaq_dist = fetch_nasdaq_dist()
+    dma = float(close.rolling(200).mean().iloc[-1])
+    return float((price - dma) / dma)
 
 # =====================================================
-# DECISION ENGINE (PURE SCALAR LOGIC)
+# STRATEGY ENGINE
 # =====================================================
-def csp_equivalent_decision(price: float, dma: float):
+def csp_equivalent_decision(price, dma):
     dist = (price - dma) / dma
 
-    # ---- SELL LOGIC (STAGGERED) ----
     if dist >= SELL_L3:
-        return "HOLD CORE", 0.0, "Extreme extension; hold remaining core"
-
+        return "HOLD CORE", 0.0, "Extreme extension"
     elif dist >= SELL_L2:
         return "SELL PARTIAL", SELL_L2_PCT, ">20% above 200 DMA"
-
     elif dist >= SELL_L1:
         return "SELL PARTIAL", SELL_L1_PCT, ">15% above 200 DMA"
-
-    # ---- BUY LOGIC ----
     elif abs(dist) <= NEAR_DMA:
         return "SMALL BUY", 0.0, "Near 200 DMA"
-
     elif BUY_ZONE_LOW <= price / dma <= BUY_ZONE_HIGH:
         return "ACCUMULATE", 0.0, "Inside virtual CSP buy zone"
-
     elif price < dma * DEEP_BUY:
         return "AGGRESSIVE BUY", 0.0, "Deep discount to 200 DMA"
-
-    # ---- DEFAULT ----
     else:
         return "WAIT", 0.0, "No edge"
 
 # =====================================================
-# RUN STRATEGY
+# LOAD DATA
 # =====================================================
-results = []
+portfolio = load_portfolio()
+top100_df = load_top100()
+nasdaq_dist = fetch_nasdaq_dist()
 
-for _, row in portfolio.iterrows():
-    ticker = row["ticker"]
-    data = fetch_price_data(ticker)
-
-    if data is None or data.empty or len(data) < 200:
-        continue
-
-    close = data["Close"]
-    price = float(close.iloc[-1])
-    dma_200 = float(close.rolling(200).mean().iloc[-1])
-
-    action, sell_pct, reason = csp_equivalent_decision(price, dma_200)
-
-    shares_held = float(row["shares"])
-    shares_to_sell = round(shares_held * sell_pct, 4)
-
-    dist_pct = (price - dma_200) / dma_200 * 100
-
-    # Market-wide context (SAFE SCALAR CHECK)
-    if nasdaq_dist > NASDAQ_EXTREME and action.startswith("SELL"):
-        reason += " | Market-wide tech extension"
-
-    results.append({
-        "Ticker": ticker,
-        "Sector": row["sector"],
-        "Shares Held": shares_held,
-        "Shares to Sell": shares_to_sell,
-        "Avg Cost": round(float(row["avg_cost"]), 2),
-        "Current Price": round(price, 2),
-        "200 DMA": round(dma_200, 2),
-        "Dist from 200DMA %": round(dist_pct, 2),
-        "Action": action,
-        "Reason": reason
-    })
-
-final_df = pd.DataFrame(results)
+tab1, tab2 = st.tabs([
+    "📌 My Portfolio",
+    "🤖🧬 Top 100 AI & Healthcare"
+])
 
 # =====================================================
-# UI
+# TAB 1 — PORTFOLIO
 # =====================================================
-st.subheader("📌 Portfolio Action Engine")
+with tab1:
+    st.subheader("📌 Portfolio Execution Engine")
 
-st.dataframe(
-    final_df.sort_values("Dist from 200DMA %"),
-    use_container_width=True,
-    column_config={
-        "Shares to Sell": st.column_config.NumberColumn(
-            help="Calculated using staggered profit booking rules"
-        ),
-        "Reason": st.column_config.TextColumn(width="large")
-    }
-)
+    results = []
 
-# =====================================================
-# CONTEXT PANELS
-# =====================================================
-st.divider()
+    for _, row in portfolio.iterrows():
+        data = fetch_price_data(row["ticker"])
+        if data.empty or len(data) < 200:
+            continue
 
-col1, col2 = st.columns(2)
+        close = data["Close"]
+        price = float(close.iloc[-1])
+        dma = float(close.rolling(200).mean().iloc[-1])
 
-with col1:
-    st.markdown("### 🧠 Strategy Rules")
-    st.markdown("""
-- Partial sells at **+15% / +20%**
-- Never fully exit secular winners
-- Buy only near or below 200 DMA
-- Cash is a valid position
-- No forced rotation
+        action, sell_pct, reason = csp_equivalent_decision(price, dma)
+
+        if nasdaq_dist > NASDAQ_EXTREME and action.startswith("SELL"):
+            reason += " | Market-wide extension"
+
+        results.append({
+            "Ticker": row["ticker"],
+            "Sector": row["sector"],
+            "Shares Held": row["shares"],
+            "Shares to Sell": round(row["shares"] * sell_pct, 4),
+            "Avg Cost": row["avg_cost"],
+            "Current Price": round(price, 2),
+            "200 DMA": round(dma, 2),
+            "Dist from 200DMA %": round((price - dma) / dma * 100, 2),
+            "Action": action,
+            "Reason": reason
+        })
+
+    df_port = pd.DataFrame(results)
+
+    st.dataframe(df_port, use_container_width=True)
+
+    with st.expander("📘 How to use – Portfolio Tab"):
+        st.markdown("""
+**Purpose:** Execute disciplined actions on stocks you already own.
+
+**Actions**
+- **SELL PARTIAL** → Book profits, create cash
+- **HOLD CORE** → Let secular winners run
+- **SMALL BUY / ACCUMULATE** → Deploy calmly near fair value
+- **WAIT** → Cash is a position
+
+**Key Metric**
+- **200 DMA**: Long-term valuation & risk anchor used by institutions
 """)
 
-with col2:
-    st.markdown("### 🌍 Market Context")
-    st.metric(
-        label="NASDAQ distance from 200 DMA",
-        value=f"{round(nasdaq_dist * 100, 2)}%",
-        delta="Extended" if nasdaq_dist > NASDAQ_EXTREME else "Normal"
-    )
+# =====================================================
+# TAB 2 — TOP 100 ROTATION ENGINE
+# =====================================================
+with tab2:
+    st.subheader("🤖🧬 Rotation Discovery Engine")
 
-# =====================================================
-# CSV PREVIEW
-# =====================================================
-with st.expander("📄 Portfolio Source (data/portfolio.csv)"):
-    st.dataframe(portfolio, use_container_width=True)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        universe = st.radio("Universe", ["All", "AI Focus", "Healthcare Focus"], horizontal=True)
+
+    with col2:
+        show_top10 = st.checkbox("Show Top 10 Only", value=True)
+
+    results = []
+
+    def score_price(dist):
+        if dist <= -5: return 40
+        if dist <= 0: return 30
+        if dist <= 5: return 20
+        if dist <= 10: return 10
+        return 0
+
+    def score_action(a):
+        return {
+            "AGGRESSIVE BUY": 25,
+            "ACCUMULATE": 20,
+            "SMALL BUY": 15,
+            "WAIT": 5
+        }.get(a, 0)
+
+    for _, row in top100_df.iterrows():
+        data = fetch_price_data(row["ticker"])
+        if data.empty or len(data) < 200:
+            continue
+
+        close = data["Close"]
+        price = float(close.iloc[-1])
+        dma = float(close.rolling(200).mean().iloc[-1])
+        dist_pct = (price - dma) / dma * 100
+
+        action, _, reason = csp_equivalent_decision(price, dma)
+
+        score = (
+            score_price(dist_pct)
+            + score_action(action)
+            + (15 if row["growth_%_3y"] >= 15 else 5)
+            + (15 if row["ai_exposure_score"] >= 70 else 5)
+        )
+
+        if nasdaq_dist > NASDAQ_EXTREME:
+            score -= 15
+            reason += " | Market overheated"
+
+        score = max(0, min(100, score))
+
+        results.append({
+            "Ticker": row["ticker"],
+            "Company": row["company name"],
+            "Sector": row["sector"],
+            "Rotation Score": score,
+            "Action": action,
+            "Dist from 200DMA %": round(dist_pct, 2),
+            "Reason": reason
+        })
+
+    df_rot = pd.DataFrame(results).sort_values("Rotation Score", ascending=False)
+
+    if universe == "AI Focus":
+        df_rot = df_rot[df_rot["Sector"].str.lower() != "healthcare"]
+    elif universe == "Healthcare Focus":
+        df_rot = df_rot[df_rot["Sector"].str.lower() == "healthcare"]
+
+    if show_top10:
+        df_rot = df_rot.head(10)
+
+    st.dataframe(df_rot, use_container_width=True)
+
+    with st.expander("📘 How to use – Rotation Engine & Metrics"):
+        st.markdown("""
+### Rotation Score (0–100)
+Composite signal combining:
+- **Price vs 200 DMA (40 pts)** – cheaper is better
+- **Action strength (25 pts)** – BUY beats WAIT
+- **Growth (15 pts)** – sustained earnings expansion
+- **AI Exposure (15 pts)** – structural tailwind
+- **Market penalty (−15 pts)** – reduces risk during frothy markets
+
+### How to use
+1. Use **Portfolio tab** to generate cash
+2. Use **Top-100 tab** to find rotation candidates
+3. Focus on **Top 10 scores**
+4. Deploy only when Action ≠ WAIT
+""")
 
 st.caption(f"Last refreshed: {datetime.now().strftime('%Y-%m-%d %H:%M IST')}")
