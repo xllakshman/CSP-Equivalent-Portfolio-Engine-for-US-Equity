@@ -232,12 +232,48 @@ with tab2:
     with st.expander("📘 How to use – Rotation Engine & Metrics"):
         st.markdown("""
 ### Rotation Score (0–100)
-Composite signal combining:
-- **Price vs 200 DMA (40 pts)** – cheaper is better
-- **Action strength (25 pts)** – BUY beats WAIT
-- **Growth (15 pts)** – sustained earnings expansion
-- **AI Exposure (15 pts)** – structural tailwind
-- **Market penalty (−15 pts)** – reduces risk during frothy markets
+
+**A high Rotation Score means:** “This stock is currently one of the best places to deploy new capital, relative to other choices, given today’s market conditions.”
+It does not mean:
+- “This is the best stock”
+- “This will go up tomorrow”
+- “Sell everything else and buy this”
+
+**Think of it as capital allocation priority, not prediction.**
+
+**Composite signal combining:**
+- **Price vs 200 DMA (40 pts)** – cheaper is better; Is the stock cheap relative to its own history?; Avoid buying streched stocks
+- **Action strength (25 pts)** – BUY beats WAIT; Is the trend favorable without being overheated?; This ensures you’re entering when risk is asymmetric.
+- **Growth (15 pts)** – sustained earnings expansion; Does the business have structural growth tailwinds? 3 year growth;
+- **AI Exposure (15 pts)** – structural tailwind; Sustained growth → resilience; High AI exposure → secular demand; This avoids value traps and cyclical dead ends.
+- **Market penalty (−15 pts)** – reduces risk during frothy markets; Is the market regime supportive?; This prevents forced rotation during frothy markets.
+
+### How This Fits Your Whole System
+- **Portfolio Tab answers:** “What should I reduce or hold?”
+- **Rotation Tab answers:** “Where should I redeploy cash, if at all?”
+- **A high Rotation Score means:** “If I must deploy capital, this is one of the least risky, highest-quality places to do it.”
+
+### How to Interpret Score Ranges (IMPORTANT)
+🟢 **80–100 → Strong Rotation Candidate**
+- Stock is attractively priced
+- Growth + AI tailwinds present
+- Market risk is manageable
+- Best use of fresh cash today
+➡ **Action:** Consider deploying new capital
+
+🟡 **65–79 → Conditional Candidate**
+- Setup is good, but not perfect
+- Either valuation or market regime is borderline
+➡ **Action:** Watch closely / partial deployment
+
+🟠 **40–64 → Neutral**
+- No clear edge
+- Either expensive or weak growth
+➡ **Action:** WAIT
+
+🔴 **Below 40 → Avoid for now**
+- Overheated or low-quality setup
+➡ **Action:** Do not rotate capital here
 
 ### How to use
 1. Use **Portfolio tab** to generate cash
